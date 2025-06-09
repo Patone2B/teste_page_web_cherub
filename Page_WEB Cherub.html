@@ -1,1043 +1,517 @@
 <!DOCTYPE html>
-
 <html lang="fr">
-
 <head>
-
-  <meta charset="UTF-8">
-
-  <title>Univers CHERUB</title>
-
-  <style>
-
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CHERUB - Accueil, Livres & Personnages</title>
+<style>
     body {
-
-      margin: 0;
-
-      font-family: 'Segoe UI', sans-serif;
-
-      background-color: #1a1a1a;
-
-      color: #fff;
-
-      overflow-x: hidden;
-
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
     }
-
-
-
     header {
-
-      background-color: #2c2c2c;
-
-      padding: 40px 20px 20px;
-
-      border-bottom: 3px solid #00ccff;
-
-      text-align: center;
-
+        background: #333;
+        color: white;
+        padding: 20px 0;
+        text-align: center;
+        border-bottom: 3px solid #0cf;
+    }
+    header nav a {
+        color: #0cf;
+        text-decoration: none;
+        margin: 0 15px;
+        font-weight: bold;
+        font-size: 1.1em;
+        cursor: pointer;
+    }
+    header nav a:hover {
+        text-decoration: underline;
+    }
+    .container {
+        max-width: 900px;
+        margin: 30px auto;
+        background: white;
+        padding: 30px 40px;
+        border-radius: 10px;
+        box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    }
+    h1, h2 {
+        color: #222;
+        text-align: center;
+    }
+    p {
+        line-height: 1.6;
+        color: #333;
+        font-size: 1.1em;
+    }
+    footer {
+        text-align: center;
+        background: #333;
+        color: white;
+        padding: 15px 0;
+        margin-top: 40px;
+        border-top: 3px solid #0cf;
+    }
+    .author {
+        margin-top: 20px;
+        font-style: italic;
+        font-weight: bold;
+        color: #0cf;
     }
 
-
-
-    header h1 {
-
-      font-size: 2.8em;
-
-      margin: 0 0 20px;
-
-      font-weight: bold;
-
-      color: #111;
-
-      text-shadow: 1px 1px 0 #00ccff22;
-
-      animation: fadeInDown 1s ease-out;
-
+    /* Livres */
+    .book {
+        display: flex;
+        align-items: flex-start;
+        border-bottom: 1px solid #ddd;
+        padding: 20px 0;
+    }
+    .book:last-child {
+        border: none;
+    }
+    .cover {
+        flex-shrink: 0;
+        width: 130px;
+        height: 200px;
+        margin-right: 25px;
+        box-shadow: 0 0 8px rgba(0,0,0,0.15);
+        object-fit: cover;
+    }
+    .details {
+        flex-grow: 1;
+    }
+    h3 {
+        margin: 0 0 10px;
+        color: #0cf;
+    }
+    button {
+        background-color: #0cf;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
+    button:hover {
+        background-color: #09a;
+    }
+    .summary {
+        display: none;
+        margin-top: 10px;
+        background-color: #eef6fb;
+        padding: 15px;
+        border-radius: 7px;
+        box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
     }
 
-
-
-    nav {
-
-      display: flex;
-
-      flex-wrap: wrap;
-
-      justify-content: center;
-
-      gap: 20px;
-
-      animation: fadeIn 1.5s ease-in-out;
-
+    /* Personnages */
+    .character {
+        border-bottom: 1px solid #ddd;
+        padding: 15px 0;
+    }
+    .character:last-child {
+        border: none;
+    }
+    .character h3 {
+        color: #0cf;
+        margin-bottom: 5px;
+    }
+    .character p {
+        margin: 5px 0;
     }
 
-
-
-    nav button {
-
-      background: #111;
-
-      border: 2px solid #00ccff;
-
-      border-radius: 8px;
-
-      padding: 10px 18px;
-
-      font-size: 1.1em;
-
-      color: #00ccff;
-
-      font-weight: bold;
-
-      cursor: pointer;
-
-      transition: all 0.3s ease;
-
-      position: relative;
-
-      overflow: hidden;
-
+    /* Sections */
+    section {
+        display: none;
     }
-
-
-
-    nav button::before {
-
-      content: '';
-
-      position: absolute;
-
-      top: 50%;
-
-      left: -50%;
-
-      width: 200%;
-
-      height: 300%;
-
-      background: radial-gradient(circle, #00ccff55 10%, transparent 60%);
-
-      transform: translateY(-50%) rotate(25deg);
-
-      transition: left 0.4s ease;
-
-      z-index: 0;
-
+    section.active {
+        display: block;
     }
-
-
-
-    nav button:hover::before {
-
-      left: 100%;
-
-    }
-
-
-
-    nav button:hover {
-
-      background-color: #00ccff;
-
-      color: #111;
-
-      transform: scale(1.05);
-
-      box-shadow: 0 0 10px #00ccff88;
-
-    }
-
-
-
-    .section {
-
-      display: none;
-
-      padding: 40px 20px;
-
-      animation: fadeInUp 0.6s ease;
-
-    }
-
-
-
-    .section.active {
-
-      display: block;
-
-    }
-
-
-
-    @keyframes fadeIn {
-
-      from { opacity: 0; }
-
-      to { opacity: 1; }
-
-    }
-
-
-
-    @keyframes fadeInDown {
-
-      from { opacity: 0; transform: translateY(-30px); }
-
-      to { opacity: 1; transform: translateY(0); }
-
-    }
-
-
-
-    @keyframes fadeInUp {
-
-      from { opacity: 0; transform: translateY(20px); }
-
-      to { opacity: 1; transform: translateY(0); }
-
-    }
-
-
-
-    @media (max-width: 600px) {
-
-      nav {
-
-        gap: 10px;
-
-      }
-
-
-
-      nav button {
-
-        font-size: 1em;
-
-        padding: 8px 14px;
-
-      }
-
-    }
-
-  </style>
-
-</head>
-
-<body>
-
-
-
-  <header>
-
-    <h1>Bienvenue dans l'univers CHERUB</h1>
-
-    <nav>
-
-      <button onclick="showSection('accueil')">Accueil</button>
-
-      <button onclick="showSection('couple')">Couple</button>
-
-      <button onclick="showSection('personnages')">Personnages</button>
-
-      <button onclick="showSection('livres')">Livres</button>
-
-      <button onclick="showSection('missions')">Missions</button>
-
-      <button onclick="showSection('campus')">Campus</button>
-
-      <button onclick="showSection('bouton1')">Bouton 1</button>
-
-      <button onclick="showSection('bouton2')">Bouton 2</button>
-
-      <button onclick="showSection('bouton3')">Bouton 3</button>
-
-      <button onclick="showSection('bouton4')">Bouton 4</button>
-
-    </nav>
-
-  </header>
-
-
-
-  <div id="accueil" class="section active">
-
-    <h2>Accueil</h2>
-
-    <p>CHERUB est une série de romans d'espionnage écrite par Robert Muchamore, mettant en scène un groupe d'adolescents agents secrets travaillant pour une organisation britannique top secrète. À travers des missions palpitantes, la série explore les thèmes de l'amitié, du courage, et des défis personnels.
-
-
-
-Chaque tome plonge le lecteur dans une aventure pleine de suspense et d'action, tout en abordant des sujets réalistes liés à l’adolescence et à la vie d’agent secret.
-
-
-
-<br>Auteur : Robert Muchamore</p>
-
-  </div>
-
-
-
-  <div id="couple" class="section">
-
-    <h2>RÉCAPITULATIF DES COUPLES DANS CHERUB</h2>
-
-    <p>Ici s'afficheront les histoires d'amour marquantes entre agents !</p>
-
- <h3>1. Jame Adams & Kerry Chang</h3>
-
-  <p>Tomes : Dès le tome 3 (Arizona Max) jusqu'au tome 17 (Commando Adams)
-
- <br> Durée : Très longue relation avec quelques ruptures temporaires
-
-  <br>Évolution : 
-
-  <br>Débutent une relation dans le tome 3
-
-  <br>Rupture temporaire dans le tome 6 (Sang pour Sang)
-
-  <br>Se remettent ensemble dans les tomes suivants
-
-  <br>Dans le tome 17 : ils se marient et attendent un enfant 
-
-  <br>statut final : 💍 Mariés, toujours ensemble</p>
-
-  <h3>2. James Adames & Dana Smith </h3>
-
- <br> Tomes : 6 (Sang pour Sang), 7 (À la Dérive), 8 (Mad Dogs), 9 (Crash)
-
-  <br>Durée : 4 tomes (relation assez longue pour James)
-
-  Évolution : 
-
-  <br>James quitte Kerry pour Dana
-
-<br>Ils ont une relation passionnée mais instable
-
-<br>Dana finit par le tromper avec Michael Hendry dans le tome 10
-
-<br>Statut final : ❌ Rupture dans le tome 10 (Le Grand Jeu)<
-
-  </p>
-
- <h3>Gabrielle O'Brien & Michael Hendry</h3>
-
- <p>Statut : En couple du tome 8 (Mad Dogs) jusqu'au tome 10 (Le Grand Jeu).</p>
-
-<br>Début : Ils se rapprochent lors de la mission d'infiltration des Slasher Boys dans Mad Dogs.
-
-  <br>Événement marquant : Gabrielle est grièvement blessée (poignardée) pendant la mission.
-
- <br>Rupture : Dans La tome 10, Gabrielle découvre que Michael l'a trompée avec Dana Smith. Elle réagit violemment en lui cassant le nez, puis s'effondre en larmes.
-
- <br>Après : Ils ne se remettent pas ensemble et ne semblent plus en contact après leur départ de CHERUB.
-
-  <h3>>💙 Bruce Norris & Kerry Chang</h3>
-
- <br>Statut : En couple du tome 8 (Mad Dogs) au tome 10 (Le Grand Jeu).
-
- <br>Début : Leur relation commence après la première rupture de Kerry avec James.
-
-<br>Rupture : Ils se séparent dans le tome 10.
-
- <br>Après : Kerry se remet avec James, et Bruce entame une relation avec Bethany dans le tome 12 (La Vague Fantôme).
-
- <h3>💚 Lauren Adams & Rat</h3>
-
- <br>Statut : En couple du tome 6 (Sang pour sang) au tome 17 (New Guard).
-
-<br>Début : Leur relation commence lorsqu'ils se rencontrent lors d'une mission.
-
-<br>Après : Ils restent ensemble après leur départ de CHERUB et vivent ensemble.
-
-  <h3>💛 Bruce Norris & Bethany Parker</h3>
-
-  <br>Statut : En couple dans le tome 12 (La Vague Fantôme).
-
-  <br>Le début de leur relation commence après la rupture de Bruce avec Kerry.
-
-<br>Après : Bruce entame une relation avec Fu Ning dans le tome 17 (New Guard).
-
-<img src="https://assets.onecompiler.app/43kna27gk/43k9cuzrn/Tableau_Couple_%20Cherub.png"width="500" height="300"/>
-
-</div>
-
-
-
-  <div id="personnages" class="section">
-
-    <h2>Personnages</h2>
-
-	  <u><h2>Les 17 livres de Cherub </h2></u>
-
-  <p>La série CHERUB suit les aventures d'adolescents d'une agence secrète britannique spécialisée dans l'espionnage à travers le monde. Ces jeunes agents mènent des missions à hauts risques, entre infiltration, lutte contre le crime organisé, terrorisme et enjeux personnels complexes. Chaque tome dévoile une nouvelle opération, ainsi que l'évolution des personnages dans un univers où l'enfance se mêle aux responsabilités d'adultes.</p>
-
-	  <u><h3> James Adams </h3></u>
-
-  
-
-  <p>James Adams, marqué par une enfance difficile, a développé un pragmatisme accru, combinant intelligence tactique et détermination pour protéger les innocents.  La perte de son père a nourri son cynisme, mais il garde une certaine conviction en l'humanité, l'influencant dans ses choix de leadership au sein du groupe Cherub.</p>
-
-  <p><strong>Missions clés : </strong> Première mission d’infiltration, enquête contre les gangs, affrontements en prison.</p>
-
- <h3>Lauren Adams</h3>
-
- <p>Lauren, quant à elle, s’est forgé une personnalité forte et déterminée malgré une enfance difficile marquée par des expériences traumatisantes. Son intelligence et sa capacité à résoudre des problèmes complexes sont des atouts précieux, mais la timidité et l'émotion luttent pour prendre le dessus, créant une force intérieure unique. </p>
-
- <h3>Michael Hendry</h3> 
-
- <p>Michael, animé par une ambition fulgurante pour le bien commun, est capable de prendre des risques audacieuses pour protéger les innocents et atteindre ses objectifs, nourrissant ainsi un leadership charismatique et stratégique.</p>
-
- <h3>Gabrielle O'Brien</h3>
-
- <p>Charismatique, combative et parfois impulsive, Gabrielle entretient une relation importante avec Michael. Elle traverse des phases émotionnelles compliquées, mais reste une agente déterminée et efficace.Gabrielle, après une expérience douloureuse, s'est forgé une conscience bienveillante et une détermination à défendre les autres, tout en apprenant la complexité du monde extérieur. </p>
-
- <h3>Kyle Bluman</h3>
-
-<p> Kyle Blaine est un autre agent de CHERUB qui est souvent impliqué dans des missions complexes et dangereuses. Il est introduit comme un personnage intelligent et réfléchit, capable de gérer des situations difficiles avec calme et précision.
-
-
-
-Caractéristiques : Kyle est décrit comme étant très analytique et doué pour la technologie. Il est souvent responsable de la gestion des aspects techniques des missions, comme le piratage informatique et la surveillance électronique.
-
-
-
-Missions : Kyle participe à plusieurs missions cruciales et est souvent un personnage central dans les intrigues de la série. Il est connu pour sa capacité à rester calme sous pression et à prendre des décisions efficaces. L'une de ses missions notables est celle où il travaille avec James Adams pour infiltrer une organisation terroriste.
-
-
-
-Relations : Kyle est bien intégré dans le groupe d'agents de CHERUB et est respecté pour ses compétences techniques et son intelligence. Il entretient des relations professionnelles et personnelles solides avec les autres agents et est souvent vu comme un membre clé de l'équipe.</p>
-
- <h3>Bruce</h3>
-
-<p>Bruce Norris est un agent de CHERUB qui apparaît dans plusieurs missions. Il est souvent décrit comme un personnage fort et compétent, avec une grande expérience en tant qu'agent.
-
-
-
-Caractéristiques : Bruce est connu pour être très athlétique et doué en arts martiaux, ce qui en fait un atout précieux lors des missions physiques. Il est également intelligent et capable de prendre des décisions rapides sous pression.
-
-
-
-Missions : Bruce participe à plusieurs missions importantes au sein de CHERUB. Il est souvent impliqué dans des opérations qui nécessitent une force physique et une grande endurance. L'une de ses missions notables est celle où il travaille avec d'autres agents pour infiltrer et démanteler des organisations criminelles.
-
-
-
-Relations : Bruce est respecté par ses pairs et est souvent vu comme un mentor pour les jeunes agents. Il entretient des relations professionnelles solides avec les autres membres de CHERUB et est connu pour être un leader naturel.</p> 
-
- <h3>Dana Smith</h3>
-
- <p>Caractéristiques : Dana est souvent décrite comme intelligente, courageuse et très compétente dans les missions qui lui sont confiées. Elle a une forte personnalité et est respectée par ses pairs.
-
- Dana participe à plusieurs missions importantes au sein de CHERUB. L'une des missions notables est celle où elle travaille avec James Adams pour sauver Ewart Asker, le président de CHERUB. Cette mission met en lumière ses compétences en espionnage et sa capacité à gérer des situations difficiles sous pression.
-
- Dana entretient des relations professionnelles et personnelles avec plusieurs autres agents de CHERUB. Elle est souvent vue comme une personne sur qui on peut compter, et elle est bien intégrée dans le groupe d'agents.
-
-Développement du Personnage : Au fil des livres, Dana montre une croissance significative en termes de maturité et de compétences. Elle devient l'une des agents les plus fiables de CHERUB, capable de prendre des décisions rapides et efficaces.</p>
-
-  <h3>Zara Asker</h3>
-
-  <p>Origine et Débuts : Zara Asker, née Jacqueline Oxford en 1970 à Telford, au Royaume-Uni, a rejoint CHERUB en 1978 à l'âge de huit ans après la mort de ses parents dans un accident d'avion. Elle a réussi le programme d'entraînement initial et a commencé sa carrière en tant qu'agent.
-
-
-
-Carrière chez CHERUB : Zara a occupé plusieurs postes au sein de CHERUB. Elle a commencé comme contrôleuse de mission adjointe en 1996. En 2006, elle a remplacé le Dr McAfferty en tant que directrice de CHERUB, un poste qu'elle a occupé jusqu'en 2015.
-
- En tant que directrice, Zara Asker était responsable de la supervision des missions et de la gestion des agents. Elle était connue pour être stricte mais bien aimée parmi les enfants de CHERUB. 
-
-Zara est mariée à Ewart Asker, qui a succédé à Zara en tant que président de CHERUB. Ils ont quatre enfants et vivent dans un cottage près du campus de CHERU.
-
-
-
-Autres Rôles : Avant de devenir directrice, Zara a également joué le rôle de mère adoptive pour plusieurs agents lors de missions spécifiques, comme lors de la mission KMG où elle a joué ce rôle pour James, Kyle, Kerry et Nicole 8.</p>
-
-  <h3>Amy Collins </h3>
-
-<p>Ancienne agente brillante , devenue superviseuse</p>  
-
-<h3>Jake Parker</h3>  
-
- <p>Jake, malgré son innocence, apprend rapidement les dangers du monde, nourrissant sa détermination à se battre pour ce qui est juste, tout en apprenant à naviguer dans un contexte plus sombre. Bethany a hérité d’une intelligence brillante et pragmatique, mais aussi une certaine ferveur pour protéger ses proches, faisant de lui un leader capable de prendre des décisions difficiles et de faire face aux menaces les plus graves</p>
-
- 
-
-  <h3>Norman Large</h3> 
-
-  <p>: Il n’a pas toujours la réputation d’un instructeur facile, mais son rôle est crucial pour former les agents CHERUB aux méthodes et stratégies nécessaires à leur travail.
-
-Un style unique: Il est connu pour son approche disciplinaire, parfois cruelle, qui vise à forger des agents forts et déterminés. Il a l'habitude d'exiger de ses élèves une grande rigueur et un dévouement absolu.
-
-Un esprit de mentor: Bien que sévère, Norman Large est aussi un mentor précieux pour les jeunes agents CHERUB, en leur offrant des conseils expérimentés et en les encourageant à développer leurs compétences.</p>
-
-  <H3>Ratbone</H3>
-
- <p>Ratbone, marqué par ses propres difficultés, a développé une attitude agressive et impulsive, capable de prendre des décisions audacieuses pour protéger ceux qu'il aime. </p>
-
-  </div>
-
-
-
-  <div id="livres" class="section">
-
-    <h2>Les 17 livres de Cherub</h2>
-
-    <h3> Tome 1 : 100 jours en enfer</h3>
-
-  <p>James Adams, 12 ans, rejoint l'organisation secrète CHERUB qui utilise des enfants comme agents. Après un entraînement rigoureux, il doit infiltrer un gang londonien pour recueillir des preuves et aider à démanteler leurs activités illégales. Ce premier tome introduit l'univers et les enjeux de la série, mêlant espionnage et vie d’adolescent.</p>
-
- <img src="https://static.fnac-static.com/multimedia/PE/Images/FR/NR/bc/aa/25/2468540/1507-1/tsp20250407080659/Miion-1-100-jours-en-enfer.jpg"/>
-
- <h3> Tome 2 : Trafic </h3>
-
- <p>James est envoyé aux États-Unis pour infiltrer un réseau de trafiquants de drogue. En pleine Californie, il doit gagner la confiance des criminels pour récolter des preuves et aider à démanteler le réseau. La mission est dangereuse, mettant en lumière les risques liés au trafic de drogue.</p>
-
- <img src="https://m.media-amazon.com/images/I/51Kl+0amo6L._AC_UF1000,1000_QL80_.jpg"width="400" height="550"
-
- <br>
-
- <h3>  Tome 3 : Arizona </h3>Tome 3: Arizona Max
-
- <p> James doit infiltrer une prison de haute sécurité pour approcher un criminel dangereux et recueillir des informations clés. Il affronte un environnement hostile, où chaque erreur peut être fatale. Ce tome explore la vie carcérale et ses défis.</p>
-
-<img src ="https://assets.onecompiler.app/43kna27gk/43krx73y8/Capture%20d%E2%80%99%C3%A9cran%202025-06-09%20%C3%A0%2008.20.38.png"width="400" height="550"/>
-
- <br>
-
- <h3> Tome 4 : Chute libre</h3>
-
- <p>L'équipe CHERUB doit déjouer un complot meurtrier. L’enquête les conduit dans un monde d’organisations criminelles où la tension et le danger sont constants. Ce tome souligne l’importance de la stratégie et de la cohésion d’équipe.</p>
-
- <img src="https://assets.onecompiler.app/43kna27gk/43krx73y8/Capture%20d%E2%80%99%C3%A9cran%202025-06-09%20%C3%A0%2008.23.44.png"width="400" height="550"/>
-
-<br>
-
- <h3> Tome 5 : Les survivants </h3>
-
-  <p>Une mission d'infiltration dans un groupe religieux extrémiste menace la sécurité nationale. Les agents doivent comprendre la radicalisation et empêcher des actes violents, tout en naviguant dans un milieu fermé et hostile.</p>
-
-  <img src="https://assets.onecompiler.app/43kna27gk/43krx73y8/Capture%20d%E2%80%99%C3%A9cran%202025-06-09%20%C3%A0%2008.25.54.png"width="400" height="550"/>
-
- <br> <h3>Tome 6 : Sang pour sang</h3>
-
-  <p>James et son équipe affrontent des braconniers impliqués dans le trafic illégal d’animaux sauvages. Cette mission met en avant la protection de la faune et les dangers du commerce illégal.</p>
-
-  <img src="https://assets.onecompiler.app/43kna27gk/43krx73y8/Capture%20d%E2%80%99%C3%A9cran%202025-06-09%20%C3%A0%2008.28.47.png"width="400" height="550"/>
-
-  <br> <h3>Tome 7 : À la dérive </h3>  
-
-  <p> Après une tragédie impliquant la perte d’un coéquipier et une trahison, James doit gérer des conflits personnels tout en poursuivant sa mission. Ce tome est chargé en émotions et en dilemmes.</p>
-
- <img src="https://assets.onecompiler.app/43kna27gk/43krx73y8/Capture%20d%E2%80%99%C3%A9cran%202025-06-09%20%C3%A0%2008.30.17.png"width="400" height="550"/>
-
- <br> <h3>Tome 8: Mad Dogs</h3>
-
- <p>L'équipe fait face à un réseau criminel violent et impitoyable. Entre affrontements physiques et résilience mentale, les agents doivent déjouer un complot dangereux.</p>
-
-<img src="https://assets.onecompiler.app/43kna27gk/43krx73y8/Capture%20d%E2%80%99%C3%A9cran%202025-06-09%20%C3%A0%2008.37.43.png"width="400" height"550"/>
-
-<br> <h3>Tome 8 1/2 Soleil Noir</h3>
-
-<p>Dans cette courte mission intermédiaire entre les tomes 8 (Mad Dogs) et 9 (Crash), l’agent Rat (Greg Rathbone), accompagné de l’agent Andy Lagan, doit infiltrer une famille dont le père, Kurt Lydon, est soupçonné de travailler pour une organisation criminelle nommée Soleil Noir. Celle-ci serait impliquée dans le trafic illégal de technologies nucléaires.
-
-Pour mener à bien cette mission, les deux agents se lient d’amitié avec le fils de Kurt, George Lydon, et sont invités à une soirée pyjama chez lui. Cette invitation est une opportunité parfaite pour accéder à l’ordinateur personnel de Kurt, où pourraient se trouver les preuves de ses activités criminelles.
-
-Mais la mission tourne mal lorsque la sœur de George, Sophie, découvre les agents en pleine fouille informatique et agresse violemment Rat. Malgré cela, Andy parvient à neutraliser Sophie et terminer le piratage de l’ordinateur.</p>
-
- <img src="https://assets.onecompiler.app/43kna27gk/43krx73y8/Capture%20d%E2%80%99%C3%A9cran%202025-06-09%20%C3%A0%2008.42.46.png" width="400" height="550"/>
-
- <br> <h3> Tome 9 : Crash </h3>
-
- <p>Infiltration dans un environnement militaire où la corruption règne. Les agents doivent récolter des preuves contre un général corrompu tout en évitant la suspicion.</p>
-
- <img src="https://assets.onecompiler.app/43kna27gk/43krx73y8/Capture%20d%E2%80%99%C3%A9cran%202025-06-09%20%C3%A0%2008.51.43.png"width="400"height="550"/>
-
- <br> <h3>Tome 10 :Le grand jeu</h3>
-
-  <p>James infiltre un club de motards hors-la-loi impliqué dans des trafics et actes violents. La confiance est difficile à gagner, et les risques extrêmes.</p>
-
-<img src="https://assets.onecompiler.app/43kna27gk/43krx73y8/Capture%20d%E2%80%99%C3%A9cran%202025-06-09%20%C3%A0%2008.54.01.png"width="400" height="550"/>
-
-<br> <h3>Tome 11 : Vandale</h3> 
-
-  <p>s'occuper de se résumez.</p>
-
-  <img src="https://assets.onecompiler.app/43kna27gk/43krx73y8/Capture%20d%E2%80%99%C3%A9cran%202025-06-09%20%C3%A0%2008.56.22.png"width="400" height="550"/>
-
-<br> <H3>Tome 12 : La Vague fantôme</H3>
-
-  <p>Opération en Chine pour infiltrer un réseau d’espionnage industriel. Les agents doivent s’adapter à un contexte culturel et politique complexe pour réussir leur mission.</p>
-
- <img src="https://assets.onecompiler.app/43kna27gk/43krx73y8/Capture%20d%E2%80%99%C3%A9cran%202025-06-09%20%C3%A0%2008.59.08.png"width="400" height="550"/>
-
-<br>  <h3>Tome 13 : Le Clan Aramov </h3>
-
-  <p>Formation et accompagnement des nouvelles recrues. Cette mission teste la préparation et la maturité des jeunes agents face aux défis de terrain.</p>
-
-  <img src="https://assets.onecompiler.app/43kna27gk/43krx73y8/Capture%20d%E2%80%99%C3%A9cran%202025-06-09%20%C3%A0%2009.01.55.png"width="400" height="550"/>
-
-  <br> <h3>Tome 14 : L'Ange gardien</h3>
-
-  <p> Les agents font face à une menace biologique mondiale. Ils enquêtent sur la source et participent à la gestion d’une crise sanitaire majeure.</p>
-
- <img src="https://assets.onecompiler.app/43kna27gk/43krx73y8/Capture%20d%E2%80%99%C3%A9cran%202025-06-09%20%C3%A0%2009.03.25.png" width="400" height="550"/>
-
- <br> <h3>Tome 15 : Black Friday</h3>
-
-  <p> Retour dans le club de motards avec une mission plus personnelle. James doit naviguer entre émotions et enjeux stratégiques dans ce tome intense.</p>
-
-  <img src="https://assets.onecompiler.app/43kna27gk/43krx73y8/Capture%20d%E2%80%99%C3%A9cran%202025-06-09%20%C3%A0%2009.05.01.png"width="400" height="550"/>
-
-  <br> <h3> Tome 16 : hors-la-loi</h3>
-
-  <p>La nouvelle génération fait face à trahisons et alliances fragiles. Cette mission met leur loyauté et leur capacité à gérer les crises à rude épreuve.</p>
-
-<img src="https://assets.onecompiler.app/43kna27gk/43krx73y8/Capture%20d%E2%80%99%C3%A9cran%202025-06-09%20%C3%A0%2009.07.20.png"width="400" height="550"/>
-
-<br> <h3>Tome 17 : Commando Adams</h3>
-
-  <p>Mission finale combinant action, révélations et résolution des arcs narratifs. Ce tome conclut la série en beauté, avec un ultime combat contre les menaces persistantes.</p>
-
- <img src="https://assets.onecompiler.app/43kna27gk/43krx73y8/Capture%20d%E2%80%99%C3%A9cran%202025-06-09%20%C3%A0%2009.10.03.png"width="400" height="550"/>
-
- <h3>Dossier secret de Cherub</h3>
-
-<p>CHERUB : Dossiers secrets" est un livre complémentaire de la série CHERUB, compilé par Zara Asker, la directrice de l'organisation. Contrairement aux autres tomes, il ne suit pas une intrigue linéaire mais offre une collection de documents et récits inédits. On y trouve des exemplaires de "CHERUB News", un journal clandestin des agents, des interviews et révélations, ainsi que des récits détaillés comme la première mission de Kerry Chang et des informations sur le père de James Adams. Le livre inclut aussi des archives et rapports de mission, offrant un aperçu unique des activités et des défis des jeunes agents. Il complète la série en fournissant des informations supplémentaires sur l'univers et les personnages de CHERUB.</p>
-
-<img src="https://assets.onecompiler.app/43kna27gk/43krx73y8/Capture%20d%E2%80%99%C3%A9cran%202025-06-09%20%C3%A0%2009.44.05.png"width="400"height="550"/>
-
-</div>
-
-
-
-  <div id="missions" class="section">
-
-    <h2>Missions</h2>
-
-    <p>Chaque tome présente une mission principale qui met en lumière les défis et risques que rencontrent les agents CHERUB.</p>
-
-  <h1>Mission 1 ( 100 jours en Enfer )</h1>
-
-  <p>James Choke, rebaptisé James Adams après son recrutement par CHERUB, est envoyé pour sa toute première mission. Après un rude entraînement de 100 jours, il doit infiltrer la famille d’un trafiquant de drogue, Keith Moore, en se faisant passer pour un enfant placé par les services sociaux. Son objectif : recueillir des preuves contre le réseau de drogue dirigé par Moore, soupçonné de blanchiment et de trafic à grande échelle.</p>
-
-  <h1>Missions tome 2 : Trafic </h1>
-
-<p>James Adams est affecté à une mission visant à infiltrer un gang international spécialisé dans le trafic d’animaux protégés. Accompagné de l’agent de CHERUB Kerry Chang, James se fait passer pour un ado rebelle afin d’approcher le fils d’un riche criminel lié au braconnage. Leur objectif est de remonter la filière jusqu’au cerveau de l’organisation.</p>  
-
-  <h1>Missions tome 3 : Arizona Max  </h1>
-
-  <p>James Adams est envoyé avec Dave Moss, un agent plus expérimenté, pour une mission à haut risque : s’introduire dans une prison américaine de haute sécurité située en Arizona. Leur objectif est d’approcher un jeune détenu, Curtis Oxford, dont le père, un célèbre braqueur de banque, s’est évadé avec un butin colossal. Les agents doivent gagner la confiance de Curtis pour obtenir des informations sur la cachette de son père.</p>
-
-  <h1>Mission tome 4 : Chute libre</h1>
-
-  <p>James Adams est envoyé avec sa sœur Lauren pour une mission dangereuse en territoire britannique : infiltrer la cellule d’un groupuscule néo-***** radicalisé, dirigé par un certain Leon Tarasov. Le groupe est soupçonné de préparer des attentats et de recruter des jeunes pour des actions violentes.Les deux agents doivent se faire passer pour des adolescents désabusés, attirés par les idéaux extrémistes, afin de s’intégrer dans le réseau. La mission devient rapidement tendue, car James doit assister à des entraînements militaires, manipulations mentales, et discours haineux. La violence psychologique et physique est omniprésente.</p>
-
-  <H1>Mission tome 5 : Les Survivants</H1>
-
-  <p>James Adams est chargé d'infiltrer une secte appelée Les Survivants, dirigée par le charismatique et manipulateur Joel Regan. Cette communauté religieuse marginale prône la fin du monde imminente et vit dans un isolement total, à l'écart de la société. Le MI5 soupçonne que la secte dissimule des activités illégales, notamment le stockage d'armes et la maltraitance de mineurs.James, accompagné de son amie Dana Smith, se fait passer pour un adolescent en rupture familiale et rejoint la communauté avec elle. Leur objectif : gagner la confiance de Regan et obtenir des preuves des délits commis, sans éveiller les soupçons.Mais très vite, les deux agents se retrouvent pris dans l’engrenage d’un groupe paranoïaque, aux règles strictes et à l’endoctrinement psychologique puissant. La mission devient dangereuse lorsque la secte commence à préparer une action violente pour "accélérer l’Apocalypse".</p>
-
-  <h1>Mission tome 6 : Sang pour sang</h1>
-
-  <p>James Adams est affecté à une mission d’infiltration au sein d’un groupe d’activistes écologistes radicaux, soupçonné d’avoir mené des actions violentes contre des entreprises polluantes. Le groupe, appelé Terra Prima, prône la désobéissance civile, mais certaines cellules semblent avoir basculé dans le terrorisme écologique.James, en compagnie de Kyle, un autre agent expérimenté, se rapproche progressivement de cette mouvance. Il doit gagner la confiance des leaders militants, tout en recueillant des preuves sur leurs opérations illégales, notamment des sabotages et des attaques à l’explosif.Durant cette mission, James entame également une relation amoureuse avec Dana Smith, ce qui complique son jugement et sa concentration. De plus, il doit faire face à des choix moraux : jusqu'où aller pour ne pas compromettre sa couverture ? Peut-il assister passivement à certaines actions ?</p>
-
-  <h1>mission tome 7 : À la dérive  </h1>
-
-  <p>James Adams, accompagné de sa sœur Lauren, se voit confier une mission particulièrement dangereuse : infiltrer un réseau criminel impliqué dans le trafic de drogue via des cargos et des ports britanniques. Les autorités soupçonnent une famille de criminels — les Arif, connus pour leurs activités maritimes douteuses — d’organiser l'importation illégale de cocaïne à grande échelle.
-
-Les deux agents sont placés dans un centre d'accueil pour mineurs délinquants afin de se rapprocher de certains membres du gang. Ensuite, ils se retrouvent intégrés dans le cercle familial des Arif, où James doit gagner leur confiance en participant à des opérations risquées, notamment des livraisons et des repérages en mer.Lauren, quant à elle, découvre l’existence d’un réseau parallèle de blanchiment d'argent. La mission devient rapidement tendue et dangereuse lorsque les enfants agents doivent embarquer à bord d’un navire servant au trafic, au risque de ne jamais revenir s’ils sont découverts.?</p>
-
-  <H1>Mission tome 8 : Mad Dogs</H1>
-
-  <p>Gabrielle O'Brien et Michael Hendry sont chargés d'infiltrer les Slasher Boys. Lors d'une livraison de drogue pour le chef du gang, Major Dee, Gabrielle est grièvement blessée par un membre d'un gang rival, les Runts, et hospitalisée dans un état critique. 
-
-Suite à cet incident, James Adams et Bruce Norris sont envoyés pour infiltrer les Mad Dogs. James retrouve Junior Moore, fils de Keith Moore, qu'il avait rencontré lors d'une précédente mission. Grâce à cette connexion, James et Bruce gagnent la confiance du gang en participant à des activités criminelles, notamment des vols et des affrontements avec les Slasher Boys.
-
-La mission atteint son paroxysme lors d'une opération de vol à l'aéroport, où James est arrêté après l'évasion de Sasha, le leader des Mad Dogs. Bruce parvient à préserver un camion contenant des preuves cruciales. Michael, de son côté, échappe à une fusillade et est confronté au membre des Runts qui a agressé Gabrielle, mais choisit de ne pas se venger. 
-
-Malgré les arrestations, des erreurs dans la gestion des preuves permettent à certains criminels d'échapper aux poursuites. Gabrielle survit à ses blessures et insiste pour que la mission continue. Bruce est récompensé pour sa performance, tandis que James fait face aux conséquences de ses actes personnels.</p>
-
-  <h1>Mission Tome 8 1/2 : Soleil Noir</h1>
-
-<p>Les agents Rat et Andy Lagan sont chargés d’une mission délicate : infiltrer la maison de Kurt Lydon, un ingénieur nucléaire suspecté de collaborer avec l’organisation criminelle Soleil Noir. Pour cela, ils se rapprochent de son fils, George, et parviennent à se faire inviter à une soirée pyjama. Une fois sur place, leur objectif est de pirater discrètement l’ordinateur de Kurt afin de récupérer des fichiers confidentiels.
-
-
-
-La mission, pourtant bien préparée, prend une tournure dangereuse lorsque Sophie, la fille de la cible, surprend les agents en pleine fouille. Une altercation violente éclate, mettant en péril leur couverture. Malgré la tension, les agents restent concentrés sur leur objectif. L’opération met en lumière les risques importants auxquels les jeunes espions de CHERUB sont confrontés. Elle montre aussi combien les missions les plus simples peuvent devenir critiques à tout moment.</p>
-
-  <h1>Mission tome 9 : Crash</h1>
-
-  <p>🛞 Le Cible principale est Leon Tarasov, un homme d’affaires véreux et mécène d’un gang influent. James doit se rapprocher de lui en jouant les jeunes rebelles passionnés de conduite et en intégrant les cercles de course nocturne.
-
-Lauren Adams, sa sœur, participe aussi à la mission avec son camarade Kevin Sumner. Ils surveillent un autre acteur du réseau à l’école locale, agissant en parallèle de James, et infiltrent une autre branche du circuit criminel.
-
-Pendant ce temps, la relation entre James et Dana se détériore : leur couple bat de l’aile, notamment à cause du comportement immature de James et de ses fréquentes absences. Cette tension amoureuse devient un fil rouge émotionnel du tome. Dana finit par rompre.
-
-Du côté de Michael Hendry et Gabrielle O'Brien, même s’ils ne sont pas directement impliqués dans cette mission, ils sont mentionnés à plusieurs reprises, notamment via les tensions internes au campus. Gabrielle commence à se poser des questions sur son avenir, et Michael commence à envisager une sortie de CHERUB, après les événements traumatisants du tome précédent (Mad Dogs).</p>
-
-  <H1>Mission tome 10 : Le grand jeu</H1>
-
-  <p>James Adams est d’abord chargé d’infiltrer un groupe radical dirigé par Chris Bradford, un ancien activiste cherchant à obtenir des armes lourdes via un réseau lié à l’IRA. Cette mission délicate implique de gagner la confiance des membres du groupe, de surveiller leurs contacts et de déjouer leurs plans avant qu’ils ne passent à l’action. La tension monte au fur et à mesure que James découvre l’ampleur de la menace, avec des risques élevés d’affrontements violents.
-
-Après cette opération, James rejoint un impressionnant camp d’entraînement militaire à Fort Reagan, aux États-Unis, qui simule une guerre civile dans une ville recréée en détail. Avec d’autres agents CHERUB et des soldats britanniques, il doit appliquer des tactiques de guerre urbaine dans un environnement hyperréaliste où ils affrontent un régiment américain. Ce jeu de guerre grandeur nature teste non seulement leur stratégie et leur endurance, mais aussi leur capacité à travailler en équipe dans des conditions extrêmes. L’exercice révèle la difficulté de mêler action militaire et esprit d’équipe face à des adversaires coriaces, le tout dans un cadre où la moindre erreur peut coûter cher.
-
-Parallèlement, la vie privée des agents connaît de fortes turbulences. Michael Hendry trompe Gabrielle O’Brien avec Dana Smith, la petite amie de James. Lors d’un match de football le jour de Noël, James, bien qu’il ne joue pas, intervient violemment en frappant Michael. Ce conflit éclate publiquement, provoquant la rupture immédiate et brutale entre Gabrielle et Michael, soulignant que même dans cet univers d’agents secrets, les tensions personnelles restent puissantes et difficiles à gérer</p>
-
-  <h1>Mission tome 11 : Vandales</h1>
-
-  <p>Dans Brigands M.C., le onzième tome de la série CHERUB de Robert Muchamore, l'histoire se concentre sur Dante Scott, un nouvel agent de CHERUB, recruté après que sa famille ait été brutalement assassinée par le gang de motards Brigands M.C. Ce drame personnel devient le moteur de sa mission : infiltrer le gang et venger la mort de ses proches.
-
-Dante, accompagné de James et Lauren Adams, est chargé d'infiltrer le club de motards Brigands M.C., dirigé par Ralph "Führer" Donnington. Le gang est impliqué dans diverses activités criminelles, notamment le trafic de drogue et d'armes. L'objectif de la mission est de recueillir des informations et de démanteler le réseau criminel de l'intérieur.
-
-Pour ce faire, Dante doit gagner la confiance des membres du gang, une tâche ardue compte tenu de son passé et de son désir de vengeance. James et Lauren le soutiennent tout au long de cette mission périlleuse, mettant à l'épreuve leurs compétences en espionnage et leur capacité à travailler en équipe sous pression..</p>
-
-  <h1>Mission tome 12 : La Vague fantome</h1>
-
-  <p>Dans ce dernier tome de la série CHERUB, James Adams, âgé de 17 ans, se voit confier une ultime mission : assurer la sécurité du gouverneur indonésien Tan Abdullah lors de sa visite officielle à Londres. Cependant, James découvre que ce politicien corrompu a profité du chaos engendré par un tsunami dévastateur en 2004 pour s'enrichir en construisant des hôtels de luxe sur les ruines des villages détruits, au détriment des populations locales .
-
-Cette révélation place James face à un dilemme moral : doit-il accomplir sa mission sans poser de questions, ou trahir CHERUB pour aider son ancien collègue et ami, Kyle Blueman, qui propose une opération clandestine visant à exposer les crimes du gouverneur ?
-
-Parallèlement, James poursuit son infiltration du gang de motards Brigands M.C., entamée dans le tome précédent. Il met en place une opération visant à piéger le gang lors d'un trafic d'armes avec des criminels chinois. L'intervention des forces de l'ordre permet l'arrestation de plusieurs membres du gang, y compris leur chef, Ralph "Le Führer" Donnington .
-
-À la fin du roman, James décide de quitter CHERUB et intègre l'université de Stanford aux États-Unis, adoptant le nom de Robert James Choke. Il retrouve Kerry Chang, avec qui il entretient une relation amoureuse, et ensemble, ils rendent hommage à la mère de James en visitant sa tombe .</p>
-
-  <H1>Mission tome 13 :Le clan Aramov</H1>
-
-  <p>Après huit mois d'attente, Ryan Sharma, 12 ans, se voit confier sa première mission en tant qu'agent CHERUB. Sa cible est Ethan Kitsell, un adolescent californien passionné d'informatique et d'échecs. Ce qui semble être une mission d'infiltration ordinaire prend une tournure inattendue lorsque Ryan découvre qu'Ethan est le petit-fils de Galenka Aramov, dirigeante du Clan Aramov, un puissant syndicat du crime basé au Kirghizistan. 
-
-Ryan parvient à se lier d'amitié avec Ethan, mais la situation dégénère rapidement : la maison de Galenka est attaquée par des assassins, entraînant la mort de Galenka et d'un ami d'Ethan. Ethan révèle que sa grand-mère souhaitait partager le pouvoir du clan avec sa sœur, Leonid, qui est soupçonnée d'avoir orchestré l'attaque pour éliminer ses rivaux. 
-
-Parallèlement, une autre intrigue se déroule avec Fu Ning, une jeune Chinoise de 11 ans, qui fuit son pays avec sa belle-mère britannique après l'arrestation de son beau-père impliqué dans un réseau de trafic humain. Capturée par Leonid, Ning assiste à l'assassinat de sa belle-mère avant de réussir à s'échapper. Elle est ensuite recrutée par CHERUB, ajoutant une nouvelle dimension à l'organisation. </p>
-
-  <h1>Mission tome 14 : l'Ange gardien</h1>
-
-  <p>Dans ce second volet de la série Aramov, Ethan Kitsell, petit-fils de la défunte Galenka Aramov, se réfugie au Kirghizistan pour échapper aux tueurs lancés à ses trousses. Cloîtré dans la base d'où sa grand-mère et son oncle, Leonid Aramov, mènent leurs opérations criminelles, Ethan reste en contact avec Ryan Sharma, l'agent de CHERUB qui lui a déjà sauvé la vie à deux reprises. Ignorant que Ryan est un agent infiltré chargé de démanteler l'organisation mafieuse dont il est l'héritier, Ethan le considère comme son "ange gardien" .
-
-Lorsque CHERUB et les Forces de Tâche Unies (TFU) perdent la trace d'Ethan, ils suspectent Leonid de préparer un coup d'État au sein du clan. Fu Ning, une autre agente de CHERUB, suggère de recruter Dan, un ancien membre du clan, pour espionner les Aramov. Ryan, Ning, Amy Collins, Ted Brasker et Kazakov se rendent au Kirghizistan. Ning et Amy retrouvent Dan et le convainquent de les aider, tandis que Ryan et Kazakov tentent d'infiltrer le quartier général du clan à Bichkek, surnommé le "Kremlin", sans succès .
-
-Parallèlement, Leonid détourne le vol d'Ethan vers le Botswana, le confiant à Kessie, une contrebandière chargée de l'éliminer une fois qu'il aura obtenu le contrôle des comptes bancaires du clan. Ethan parvient à s'échapper et contacte Irena Aramov, sa tante, révélant les intentions meurtrières de Leonid et son plan pour prendre le contrôle du clan. Irena découvre que Leonid a détourné la majorité des fonds du clan. Grâce aux informations fournies par Ethan, elle tente de récupérer les fonds, mais la CIA intercepte une partie de l'argent. Finalement, Irena expulse Leonid du clan .
-
-Alors qu'Ethan est hospitalisé pour une blessure à la cheville, des hommes de main de Leonid tentent de le kidnapper pour récupérer les accès aux comptes. Ryan se fait passer pour Ethan et est enlevé à sa place. Cette opération met en évidence les risques extrêmes auxquels sont confrontés les agents de CHERUB lors de missions d'infiltration .</p>
-
-  <H1>Mission tome 15 : Black Friday</H1>
-
-  <p>Après trois années d'infiltration, la plus longue mission de l'histoire de CHERUB touche à sa fin. Le clan Aramov, autrefois puissant syndicat du crime basé au Kirghizistan, est en déclin. Cependant, une menace majeure subsiste : une cellule terroriste appelée IDoJ (Islamic Department of Justice) prévoit de mener une attaque dévastatrice sur le sol américain.
-
-Ryan Sharma et Yosyp Kazakov sont chargés d'infiltrer cette organisation. Ils découvrent que l'IDoJ prévoit d'utiliser 11 tonnes d'explosifs pour attaquer plusieurs centres commerciaux américains lors du Black Friday, une opération qui pourrait causer des dizaines de milliers de morts. L'IDoJ sollicite l'aide du clan Aramov pour le transport des explosifs, ignorant que le clan est désormais sous le contrôle des services de renseignement américains .
-
-Au cours de l'opération, Kazakov est tué dans une explosion, mais les forces de l'ordre parviennent à localiser et neutraliser les explosifs, évitant ainsi une catastrophe majeure.
-
-Parallèlement, au campus de CHERUB, Fu Ning, Grace Vulliamy, Leon Sharma et Alfie Duboisson suivent un cours de conduite avancée dirigé par les anciens agents James Adams et Bruce Norris. Ning et Grace réussissent l'épreuve, tandis que Leon et Alfie sont disqualifiés pour tricherie. Ils apprennent ensuite la mort de Kazakov et les événements survenus aux États-Unis. 
-
-Dans le même temps, Amy Collins et Ryan Sharma sont envoyés au Kremlin, le quartier général du clan Aramov au Kirghizistan, pour finaliser le démantèlement de l'organisation. Leonid Aramov, le chef du clan, est toujours en fuite. Pour l'arrêter, Amy sollicite l'aide de Tamara, l'ex-épouse de Leonid, en échange de la protection de leur fils, André Aramov. Afin de préparer André à cette mission dangereuse, Zara Asker fait appel à James Adams, désormais à la retraite, pour l'entraîner </p>
-
-  <H1>Mission tome 16 Hors-la-loi</H1>
-
-  <p>Après dix-huit mois passés dans un centre éducatif surveillé, Fay Hoyt, une adolescente marquée par la tragédie, n'a qu'un objectif : se venger de Hagar, le trafiquant de drogue responsable de la mort de sa mère. À sa sortie, elle retrouve Ning, une jeune fille qu'elle considère comme une alliée fidèle. Ce que Fay ignore, c'est que Ning est en réalité une agente de CHERUB infiltrée, chargée de la surveiller de près. 
-
-Parallèlement, Ryan Sharma, un autre agent de CHERUB, est missionné pour infiltrer le réseau de Hagar. En se rapprochant de l'organisation, Ryan découvre l'ampleur des activités criminelles de Hagar, notamment le trafic de drogue et les actes de violence qui en découlent.
-
-Alors que Fay s'enfonce dans une spirale de vengeance, sa collaboration involontaire avec CHERUB la place dans une position délicate. Sa soif de justice la pousse à prendre des risques inconsidérés, mettant en péril non seulement sa propre sécurité, mais aussi celle des agents infiltrés</p>
-
-  <H1>Mission tome 17 : Commando Adams</H1>
-
-  <p>Le tome 17 de la série CHERUB, intitulé "Commando Adams", est le dernier tome de cette série populaire écrite par Robert Muchamore. Dans ce volume, on retrouve une mission finale qui rassemble des personnages des deux générations précédentes d'agents de CHERUB, offrant ainsi une conclusion épique à la série.
-
-L'histoire commence lors d'une mission de recrutement de routine, au cours de laquelle deux agents de CHERUB découvrent un complot criminel orchestré depuis le Moyen-Orient par un groupe terroriste redoutable. Cette découverte les entraîne dans une mission de grande envergure pour déjouer ce complot et sauver des otages.
-
-La particularité de cette mission est qu'elle réunit des agents de différentes générations, permettant aux lecteurs de retrouver des personnages qu'ils ont suivis tout au long de la série. Cette collaboration entre anciens et nouveaux agents ajoute une dimension émotionnelle à l'histoire, car elle met en lumière l'évolution des personnages et l'héritage de CHERUB.
-
-"Commando Adams" est une aventure palpitante qui mêle action, suspense et émotion, tout en offrant une conclusion satisfaisante à la série CHERUB. Les lecteurs peuvent s'attendre à des rebondissements, des moments de tension et des retrouvailles touchantes entre les personnages qui ont marqué la série.</p>
-
-  </div>
-
-
-
-  <div id="campus" class="section">
-
-    <h2>Campus</h2>
-
-    <p>Le campus CHERUB : dortoirs, salle de mission, entraînements... tout est ici.</p>
-
-  <p> recréel'environement avec Unreal Engine et integrer dezs photos ici.</p>
-
-  </div>
-
-
-
-  <div id="bouton1" class="section">
-
-    <h2>Les Tee-shirt</h2>
-
-<u> <p> Attention les photos que vous voyer en dessus est faite grâce à la génération par IA. Ce n'est pas forcement la vison de l'auteur. </p></u>
-
-  <H3>T-shirt Orange</H3>
-
-  <p> 🎯 Statut : Visiteur ou enfant non-agent
-
-Porté par les enfants vivant sur le campus mais qui ne sont pas encore agents.
-
-Exemple : enfants trop jeunes ou frères/sœurs d'agents.
-
-Ils ne participent à aucune mission ni entraînement.</p>
-
- <img src="https://assets.onecompiler.app/43kna27gk/43krx73y8/Capture%20d%E2%80%99%C3%A9cran%202025-06-06%20%C3%A0%2009.24.24.png" width="300" height="300"/>
-
-  <h3>T-shirt Blanc</h3>
-
-  <p>Statut : Candidat à la formation
-
-Donné à ceux qui ont été sélectionnés pour CHERUB mais n'ont pas encore commencé ou fini l'entraînement initial.
-
-Ils vivent sur le campus et se préparent pour le programme d’entraînement de base.</p>
-
-<img src ="https://assets.onecompiler.app/43kna27gk/43krx73y8/Capture%20d%E2%80%99%C3%A9cran%202025-06-06%20%C3%A0%2009.25.03.png" width="300"height="300"/>
-
-  <h3>T-Shirt rouge</h3>
-
-  <p>Statut : En entraînement de base
-
-Porté pendant les 100 jours d'entraînement intensif à la base d'entraînement CHERUB.
-
-Entraînement très difficile avec tests physiques, mentaux, et de coopération.
-
-Si l'agent échoue : retour au T-shirt blanc ou exclusion du programme.</p>
-
-<img src="https://assets.onecompiler.app/43kna27gk/43krx73y8/Capture%20d%E2%80%99%C3%A9cran%202025-06-06%20%C3%A0%2009.24.55.png" width="300"height="300"/>
-
- <h3>T-Shirt Bleu</h3>
-
- <p>Statut : Nouvel agent
-
-Obtenu après avoir terminé avec succès l'entraînement de base.
-
-Donne le statut d’agent opérationnel : ils peuvent maintenant partir en mission.
-
-C’est le premier niveau de véritable agent.</p>
-
- <img src="https://assets.onecompiler.app/43kna27gk/43krx73y8/Capture%20d%E2%80%99%C3%A9cran%202025-06-06%20%C3%A0%2009.25.19.png"width="300"height="300"/>
-
- <h3>T-Shirt Gris</h3>
-
-  <p>Statut : Agent expérimenté
-
-Donné après avoir :
-
-Réalisé au moins une mission avec succès,
-
-Montré de bonnes capacités sur le terrain,
-
-Obtenu l’approbation des superviseurs.
-
-Symbole d'expérience et de confiance.
-
-La majorité des agents CHERUB portent ce T-shirt.</p>
-
-<img src="https://assets.onecompiler.app/43kna27gk/43krx73y8/Capture%20d%E2%80%99%C3%A9cran%202025-06-06%20%C3%A0%2009.30.57.png"width="300"height="300"/>
-
-<H3>T-Shirt Noir</H3>  
-
- <p>Statut : Agent d’élite
-
-Réservé aux agents :
-
-Ayant complété plusieurs missions complexes,
-
-Faisant preuve d’un niveau d’excellence exceptionnel,
-
-Ayant gagné la confiance de la direction.
-
-Très rare, ce T-shirt est un honneur prestigieux.
-
-Exemples : James Adams en fin de série, Kyle Blueman…</p>
-
-<img src="https://assets.onecompiler.app/43kna27gk/43krx73y8/Capture%20d%E2%80%99%C3%A9cran%202025-06-06%20%C3%A0%2009.30.47.png"width="300"height="300"/>
-
- <h3>T-Shirt Blanc</h3>
-
-  <p>Statut : Agent retraité
-
-Les agents quittent CHERUB à 17 ans (ou avant, volontairement).
-
-Ils reçoivent un T-shirt blanc de départ pour symboliser la fin de leur service.
-
-Pas le même blanc que celui des recrues, mais même couleur.</p>
-
- <img src="https://assets.onecompiler.app/43kna27gk/43krx73y8/Capture%20d%E2%80%99%C3%A9cran%202025-06-06%20%C3%A0%2009.31.06.png"width="300"height="300"/>
-
- </div>
-
-
-
-  <div id="bouton2" class="section">
-
-    <h2>l'Entrainement</h2>
-
-    <p>Voici le programe d'entrainement pour Cherub</p>
-
-  <h3>ENTRAÎNEMENT CHERUB – LES 100 JOURS EN ENFER</h3>
-
-  <p> Avant l'entraînement, les recrues passent des tests médicaux, psychologiques et des entretiens.
-
-Une fois jugé apte, le jeune est officiellement accepté pour commencer l’entraînement.
-
-Les recrues reçoivent un T-shirt rouge et sont envoyées dans un centre isolé du campus, totalement coupées du reste de l'organisation</p>
-
-   <H3><strong><u>📅 DURÉE : 100 jours (3 mois environ)</u></strong></H3>
-
-   <li>Pas de jour de repos. Pas de pause. Aucun abandon autorisé sauf blessure grave.</li>
-
-   <li>Toute forme de plaintes ou de tricherie est sévèrement punie (souvent par des exercices physiques supplémentaires).</li>
-
-   <li>Les instructeurs ont carte blanche pour mettre la pression psychologique.</li>
-
-   <H3><strong><u> Encadrement et dynamique</u></strong></H3>
-
-   <li>Chaque recrue est placée en binôme. Si l’un échoue, l’autre échoue aussi.</li>
-
-   <li>Cela développe la solidarité, le travail d’équipe et la gestion de conflit.</li>
-
-   <li>Instructeurs principaux : Mr Large et Miss Langan, impitoyables mais efficaces.</li>
-
-   <H3><strong><u>CONTENU DE L'ENTRAÎNEMENT</u></strong></H3>
-
-   <u>1. Condition physique extrême</u>
-
-   <li>Course à pied quotidienne (souvent avec sac à dos de 20 kg)</li>
-
-   <li>Pompes, tractions, abdos, exercices en chaîne sans temps de récupération</li>
-
-   <li>Natation, parfois dans des conditions difficiles (eau glacée, courant)</li>
-
-   <li>Combat à mains nues, techniques de base en self-défense</li>
-
-   <li>Endurance mentale face à la douleur, la fatigue, les critiques</li>
-
-   <u>2. Survie & Environnement hostile</u>
-
-   <li>Randonnées et bivouacs en forêt ou en montagne pendant plusieurs jours</li>
-
-   <li>Construction d’abris, orientation avec carte et boussole</li>
-
-   <li>Rationnement alimentaire, conditions météo extrêmes</li>
-
-   <li>Test : survivre 48h seuls sans contact, avec équipement minimal</li>
-
-   <u>3. Travail d’équipe</u>
-
-   <li>Tous les exercices sont pensés pour forcer la coopération</li>
-
-  <li>Répartition des tâches, gestion des conflits</li>
-
-  <li>Répartition des tâches, gestion des conflits</li>
-
-   <li>Si un binôme se dispute ou perd en efficacité = punition collective</li>
-
-   <li>Entraînement à sauver son partenaire blessé, porter un corps, etc.</li>
-
-  <u>4. Discipline & résilience mentale</u>
-
-   <stong><li>Le programme est pensé pour briser les plus faibles psychologiquement :</li></stong>
-
-   <li>Insultes, isolement, épreuves humiliantes</li>
-
-   <li>Privation de sommeil, réveils nocturnes pour exercices</li>
-
-   <li>Accidents simulés, stress constant</li>
-
-   <li>Il faut garder son sang-froid en toutes circonstances</li>
-
-   <u>5. Évaluations continues</u>
-
-   <li>Aucun planning fixe : les recrues ne savent jamais ce qui les attend</li>
-
-   <li>Épreuves surprises, notées en secret</li>
-
-   <li>Échecs répétés = exclusion ou redoublement</li>
-
-   <strong><u><h3>🎖️ FIN D'ENTRAÎNEMENT</h3></u></strong>
-
-   <li>Les recrues qui réussissent les 100 jours obtiennent le T-shirt bleu.</li>
-
-   <li>Une cérémonie est organisée avec remise officielle.</li>
-
-    <li>Ensuite, elles deviennent agents opérationnels et peuvent participer à des missions réelles.</li>
-
-    <strong><u><h3>🧍 Exemple : James et Kerry dans le tome 1</h3></u></strong>
-
-    <li>Kerry a déjà échoué une fois l’entraînement et doit recommencer avec James.</li>
-
-    <li>Leur binôme connaît plusieurs moments de tension, mais ils finissent par soutenir l’un l’autre.</li>
-
-    <li>u>Ils passent par :</li>
-
-    <li>une randonnée en montagne dans la neige,</li>
-
-  <li>des combats d'entraînement brutaux,</li>
-
-  <li>une simulation de catastrophe chimique,</li>
-
-  <li>une journée de silence absolu (aucune parole autorisée sous peine de punition),</li>
-
-    <li>des punitions humiliantes comme nettoyer des toilettes à la brosse à dents.</li>
-
-    </div>
-
-
-
-  <div id="bouton3" class="section">
-
-    <h2>Cherub dossier secret</h2>
-
-    <p>Section personnalisable 3 : galerie, quiz, anecdotes ?</p>
-
-  </div>
-
-
-
-  <div id="bouton4" class="section">
-
-    <h2>Bouton 4</h2>
-
-    <p>Section personnalisable 4 : laisse libre cours à ton imagination !</p>
-
-  </div>
-
-
-
-  <script>
-
+</style>
+<script>
     function showSection(id) {
-
-      document.querySelectorAll('.section').forEach(section => {
-
-        section.classList.remove('active');
-
-      });
-
-      const selected = document.getElementById(id);
-
-      if (selected) {
-
-        selected.classList.add('active');
-
-        selected.scrollIntoView({ behavior: 'smooth' });
-
-      }
-
+        const sections = document.querySelectorAll("section");
+        sections.forEach(sec => {
+            sec.classList.toggle("active", sec.id === id);
+        });
     }
 
+    function toggleSummary(id) {
+        const summary = document.getElementById(id);
+        summary.style.display = (summary.style.display === "block") ? "none" : "block";
+    }
+
+    window.onload = function() {
+        showSection('accueil');
+    }
+</script>
+</head>
+<body>
+<header>
+    <h1>Bienvenue dans l'univers CHERUB</h1>
+    <nav>
+        <a onclick="showSection('accueil')">Accueil</a>
+        <a onclick="showSection('livres')">Livres</a>
+        <a onclick="showSection('missions')">Missions</a>
+        <a onclick="showSection('personnages')">Personnages</a>
+    </nav>
+</header>
+
+<main class="container">
+
+    <!-- Accueil -->
+    <section id="accueil" class="active">
+        <h2>Présentation de la série CHERUB</h2>
+        <p>
+            CHERUB est une série de romans d'espionnage écrite par Robert Muchamore, mettant en scène un groupe d'adolescents agents secrets travaillant pour une organisation britannique top secrète.  
+            À travers des missions palpitantes, la série explore les thèmes de l'amitié, du courage, et des défis personnels.
+        </p>
+        <p>
+            Chaque tome plonge le lecteur dans une aventure pleine de suspense et d'action, tout en abordant des sujets réalistes liés à l’adolescence et à la vie d’agent secret.
+        </p>
+        <p class="author">Auteur : Robert Muchamore</p>
+    </section>
+
+    <!-- Livres -->
+    <section id="livres">
+        <h2>Les 17 Livres de CHERUB</h2>
+        <p style="margin-bottom: 25px; font-style: italic; font-weight: bold; text-align:center; color:#444;">
+            La série CHERUB suit les aventures d'adolescents d'une agence secrète britannique spécialisée dans l'espionnage à travers le monde. Ces jeunes agents mènent des missions à hauts risques, entre infiltration, lutte contre le crime organisé, terrorisme et enjeux personnels complexes. Chaque tome dévoile une nouvelle opération, ainsi que l'évolution des personnages dans un univers où l'enfance se mêle aux responsabilités d'adultes.
+        </p>
+
+        <div class="book">
+            <img class="cover" src="https://covers.openlibrary.org/b/id/8231996-L.jpg" alt="Tome 1 : Cherub" />
+            <div class="details">
+                <h3>Tome 1 : Cherub</h3>
+                <button onclick="toggleSummary('sum1')">Afficher / Cacher résumé</button>
+                <div id="sum1" class="summary">
+                    <p>
+                        James Adams, 12 ans, rejoint l'organisation secrète CHERUB qui utilise des enfants comme agents. Après un entraînement rigoureux, il doit infiltrer un gang londonien pour recueillir des preuves et aider à démanteler leurs activités illégales. Ce premier tome introduit l'univers et les enjeux de la série, mêlant espionnage et vie d’adolescent.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="book">
+            <img class="cover" src="https://covers.openlibrary.org/b/id/8231998-L.jpg" alt="Tome 2 : Class A" />
+            <div class="details">
+                <h3>Tome 2 : Class A</h3>
+                <button onclick="toggleSummary('sum2')">Afficher / Cacher résumé</button>
+                <div id="sum2" class="summary">
+                    <p>
+                        James est envoyé aux États-Unis pour infiltrer un réseau de trafiquants de drogue. En pleine Californie, il doit gagner la confiance des criminels pour récolter des preuves et aider à démanteler le réseau. La mission est dangereuse, mettant en lumière les risques liés au trafic de drogue.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="book">
+            <img class="cover" src="https://covers.openlibrary.org/b/id/8232000-L.jpg" alt="Tome 3 : Maximum Security" />
+            <div class="details">
+                <h3>Tome 3 : Maximum Security</h3>
+                <button onclick="toggleSummary('sum3')">Afficher / Cacher résumé</button>
+                <div id="sum3" class="summary">
+                    <p>
+                        James doit infiltrer une prison de haute sécurité pour approcher un criminel dangereux et recueillir des informations clés. Il affronte un environnement hostile, où chaque erreur peut être fatale. Ce tome explore la vie carcérale et ses défis.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="book">
+            <img class="cover" src="https://covers.openlibrary.org/b/id/8232002-L.jpg" alt="Tome 4 : The Killing" />
+            <div class="details">
+                <h3>Tome 4 : The Killing</h3>
+                <button onclick="toggleSummary('sum4')">Afficher / Cacher résumé</button>
+                <div id="sum4" class="summary">
+                    <p>
+                        L'équipe CHERUB doit déjouer un complot meurtrier. L’enquête les conduit dans un monde d’organisations criminelles où la tension et le danger sont constants. Ce tome souligne l’importance de la stratégie et de la cohésion d’équipe.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="book">
+            <img class="cover" src="https://covers.openlibrary.org/b/id/8232004-L.jpg" alt="Tome 5 : Divine Madness" />
+            <div class="details">
+                <h3>Tome 5 : Divine Madness</h3>
+                <button onclick="toggleSummary('sum5')">Afficher / Cacher résumé</button>
+                <div id="sum5" class="summary">
+                    <p>
+                        Une mission d'infiltration dans un groupe religieux extrémiste menace la sécurité nationale. Les agents doivent comprendre la radicalisation et empêcher des actes violents, tout en naviguant dans un milieu fermé et hostile.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="book">
+            <img class="cover" src="https://covers.openlibrary.org/b/id/8232006-L.jpg" alt="Tome 6 : Man vs Beast" />
+            <div class="details">
+                <h3>Tome 6 : Man vs Beast</h3>
+                <button onclick="toggleSummary('sum6')">Afficher / Cacher résumé</button>
+                <div id="sum6" class="summary">
+                    <p>
+                        James et son équipe affrontent des braconniers impliqués dans le trafic illégal d’animaux sauvages. Cette mission met en avant la protection de la faune et les dangers du commerce illégal.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="book">
+            <img class="cover" src="https://covers.openlibrary.org/b/id/8232008-L.jpg" alt="Tome 7 : The Fall" />
+            <div class="details">
+                <h3>Tome 7 : The Fall</h3>
+                <button onclick="toggleSummary('sum7')">Afficher / Cacher résumé</button>
+                <div id="sum7" class="summary">
+                    <p>
+                        Après une tragédie impliquant la perte d’un coéquipier et une trahison, James doit gérer des conflits personnels tout en poursuivant sa mission. Ce tome est chargé en émotions et en dilemmes.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="book">
+            <img class="cover" src="https://covers.openlibrary.org/b/id/8232010-L.jpg" alt="Tome 8 : Mad Dogs" />
+            <div class="details">
+                <h3>Tome 8 : Mad Dogs</h3>
+                <button onclick="toggleSummary('sum8')">Afficher / Cacher résumé</button>
+                <div id="sum8" class="summary">
+                    <p>
+                        L'équipe fait face à un réseau criminel violent et impitoyable. Entre affrontements physiques et résilience mentale, les agents doivent déjouer un complot dangereux.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="book">
+            <img class="cover" src="https://covers.openlibrary.org/b/id/8232012-L.jpg" alt="Tome 9 : The General" />
+            <div class="details">
+                <h3>Tome 9 : The General</h3>
+                <button onclick="toggleSummary('sum9')">Afficher / Cacher résumé</button>
+                <div id="sum9" class="summary">
+                    <p>
+                        Infiltration dans un environnement militaire où la corruption règne. Les agents doivent récolter des preuves contre un général corrompu tout en évitant la suspicion.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="book">
+            <img class="cover" src="https://covers.openlibrary.org/b/id/8232014-L.jpg" alt="Tome 10 : Brigands M.C." />
+            <div class="details">
+                <h3>Tome 10 : Brigands M.C.</h3>
+                <button onclick="toggleSummary('sum10')">Afficher / Cacher résumé</button>
+                <div id="sum10" class="summary">
+                    <p>
+                        James infiltre un club de motards hors-la-loi impliqué dans des trafics et actes violents. La confiance est difficile à gagner, et les risques extrêmes.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="book">
+            <img class="cover" src="https://covers.openlibrary.org/b/id/8232016-L.jpg" alt="Tome 11 : Shadow Wave" />
+            <div class="details">
+                <h3>Tome 11 : Shadow Wave</h3>
+                <button onclick="toggleSummary('sum11')">Afficher / Cacher résumé</button>
+                <div id="sum11" class="summary">
+                    <p>
+                        Une menace terroriste utilisant des technologies avancées doit être neutralisée. Cette mission implique espionnage high-tech et collaboration internationale.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="book">
+            <img class="cover" src="https://covers.openlibrary.org/b/id/8232018-L.jpg" alt="Tome 12 : People's Republic" />
+            <div class="details">
+                <h3>Tome 12 : People's Republic</h3>
+                <button onclick="toggleSummary('sum12')">Afficher / Cacher résumé</button>
+                <div id="sum12" class="summary">
+                    <p>
+                        Opération en Chine pour infiltrer un réseau d’espionnage industriel. Les agents doivent s’adapter à un contexte culturel et politique complexe pour réussir leur mission.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="book">
+            <img class="cover" src="https://covers.openlibrary.org/b/id/8232020-L.jpg" alt="Tome 13 : New Guard" />
+            <div class="details">
+                <h3>Tome 13 : New Guard</h3>
+                <button onclick="toggleSummary('sum13')">Afficher / Cacher résumé</button>
+                <div id="sum13" class="summary">
+                    <p>
+                        Formation et accompagnement des nouvelles recrues. Cette mission teste la préparation et la maturité des jeunes agents face aux défis de terrain.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="book">
+            <img class="cover" src="https://covers.openlibrary.org/b/id/8232022-L.jpg" alt="Tome 14 : Death Wave" />
+            <div class="details">
+                <h3>Tome 14 : Death Wave</h3>
+                <button onclick="toggleSummary('sum14')">Afficher / Cacher résumé</button>
+                <div id="sum14" class="summary">
+                    <p>
+                        Les agents font face à une menace biologique mondiale. Ils enquêtent sur la source et participent à la gestion d’une crise sanitaire majeure.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="book">
+            <img class="cover" src="https://covers.openlibrary.org/b/id/8232024-L.jpg" alt="Tome 15 : Brigands M.C. 2" />
+            <div class="details">
+                <h3>Tome 15 : Brigands M.C. 2</h3>
+                <button onclick="toggleSummary('sum15')">Afficher / Cacher résumé</button>
+                <div id="sum15" class="summary">
+                    <p>
+                        Retour dans le club de motards avec une mission plus personnelle. James doit naviguer entre émotions et enjeux stratégiques dans ce tome intense.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="book">
+            <img class="cover" src="https://covers.openlibrary.org/b/id/8232026-L.jpg" alt="Tome 16 : New Guard 2" />
+            <div class="details">
+                <h3>Tome 16 : New Guard 2</h3>
+                <button onclick="toggleSummary('sum16')">Afficher / Cacher résumé</button>
+                <div id="sum16" class="summary">
+                    <p>
+                        La nouvelle génération fait face à trahisons et alliances fragiles. Cette mission met leur loyauté et leur capacité à gérer les crises à rude épreuve.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="book">
+            <img class="cover" src="https://covers.openlibrary.org/b/id/8232028-L.jpg" alt="Tome 17 : Legacy" />
+            <div class="details">
+                <h3>Tome 17 : Legacy</h3>
+                <button onclick="toggleSummary('sum17')">Afficher / Cacher résumé</button>
+                <div id="sum17" class="summary">
+                    <p>
+                        Mission finale combinant action, révélations et résolution des arcs narratifs. Ce tome conclut la série en beauté, avec un ultime combat contre les menaces persistantes.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Missions -->
+    <section id="missions">
+        <h2>Les Missions Principales par Tome</h2>
+        <p style="margin-bottom: 20px; font-style: italic; color:#555; text-align:center;">
+            Chaque tome présente une mission principale qui met en lumière les défis et risques que rencontrent les agents CHERUB.
+        </p>
+		<div class="mission"> 
+		<h1>Mission 1</h1>
+		<p>James Choke, rebaptisé James Adams après son recrutement par CHERUB, est envoyé pour sa toute première mission. Après un rude entraînement de 100 jours, il doit infiltrer la famille d’un trafiquant de drogue, Keith Moore, en se faisant passer pour un enfant placé par les services sociaux. Son objectif : recueillir des preuves contre le réseau de drogue dirigé par Moore, soupçonné de blanchiment et de trafic à grande échelle.</p>
+		</div>
+			<div class="mission"> 
+		<h1>Mission 2</h1>
+		<p>James Adams est affecté à une mission visant à infiltrer un gang international spécialisé dans le trafic d’animaux protégés. Accompagné de l’agent de CHERUB Kerry Chang, James se fait passer pour un ado rebelle afin d’approcher le fils d’un riche criminel lié au braconnage. Leur objectif est de remonter la filière jusqu’au cerveau de l’organisation.</p>
+		</div>
+			<div class="mission"> 
+		<h1>Mission 3</h1>
+		<p>James Adams est envoyé avec Dave Moss, un agent plus expérimenté, pour une mission à haut risque : s’introduire dans une prison américaine de haute sécurité située en Arizona. Leur objectif est d’approcher un jeune détenu, Curtis Oxford, dont le père, un célèbre braqueur de banque, s’est évadé avec un butin colossal. Les agents doivent gagner la confiance de Curtis pour obtenir des informations sur la cachette de son père.</p>
+		</div>
+			<div class="mission"> 
+		<h1>Mission 4</h1>
+		<p>James Adams est envoyé avec sa sœur Lauren pour une mission dangereuse en territoire britannique : infiltrer la cellule d’un groupuscule néo-nazi radicalisé, dirigé par un certain Leon Tarasov. Le groupe est soupçonné de préparer des attentats et de recruter des jeunes pour des actions violentes.Les deux agents doivent se faire passer pour des adolescents désabusés, attirés par les idéaux extrémistes, afin de s’intégrer dans le réseau. La mission devient rapidement tendue, car James doit assister à des entraînements militaires, manipulations mentales, et discours haineux. La violence psychologique et physique est omniprésente.</p>
+		</div>
+			<div class="mission"> 
+		<h1>Mission 5</h1>
+		<p>James Adams est chargé d'infiltrer une secte appelée Les Survivants, dirigée par le charismatique et manipulateur Joel Regan. Cette communauté religieuse marginale prône la fin du monde imminente et vit dans un isolement total, à l'écart de la société. Le MI5 soupçonne que la secte dissimule des activités illégales, notamment le stockage d'armes et la maltraitance de mineurs.James, accompagné de son amie Dana Smith, se fait passer pour un adolescent en rupture familiale et rejoint la communauté avec elle. Leur objectif : gagner la confiance de Regan et obtenir des preuves des délits commis, sans éveiller les soupçons.Mais très vite, les deux agents se retrouvent pris dans l’engrenage d’un groupe paranoïaque, aux règles strictes et à l’endoctrinement psychologique puissant. La mission devient dangereuse lorsque la secte commence à préparer une action violente pour "accélérer l’Apocalypse".</p>
+		</div>
+			<div class="mission"> 
+		<h1>Mission 6</h1>
+		<p>James Adams est affecté à une mission d’infiltration au sein d’un groupe d’activistes écologistes radicaux, soupçonné d’avoir mené des actions violentes contre des entreprises polluantes. Le groupe, appelé Terra Prima, prône la désobéissance civile, mais certaines cellules semblent avoir basculé dans le terrorisme écologique.James, en compagnie de Kyle, un autre agent expérimenté, se rapproche progressivement de cette mouvance. Il doit gagner la confiance des leaders militants, tout en recueillant des preuves sur leurs opérations illégales, notamment des sabotages et des attaques à l’explosif.Durant cette mission, James entame également une relation amoureuse avec Dana Smith, ce qui complique son jugement et sa concentration. De plus, il doit faire face à des choix moraux : jusqu'où aller pour ne pas compromettre sa couverture ? Peut-il assister passivement à certaines actions ?</p>
+		</div>
+		<!-- Ici tu peux copier/coller la section "missions" que tu avais déjà ou me demander si tu veux que je l'ajoute -->
+    </section>
+
+    <!-- Personnages -->
+    <section id="personnages">
+        <h2>Les Personnages Principaux de CHERUB</h2>
+
+        <div class="character">
+            <h3>James Adams</h3>
+            <p>Le protagoniste principal, recruté très jeune, courageux et déterminé. Il évolue au fil des missions, développant ses compétences et affrontant ses propres défis personnels.</p>
+            <p><strong>Missions clés :</strong> Première mission d’infiltration, enquête contre les gangs, affrontements en prison.</p>
+        </div>
+
+        <div class="character">
+            <h3>Lauren Adams</h3>
+            <p>Sœur de James, également agent CHERUB, experte en infiltration et analyse. Elle joue un rôle important dans plusieurs missions critiques.</p>
+            <p><strong>Missions clés :</strong> Opérations d’infiltration et de terrain en Europe et aux États-Unis.</p>
+        </div>
+
+        <div class="character">
+            <h3>Michael Hendry</h3>
+            <p>Agent expérimenté, spécialiste du combat et de la tactique. Son rôle est souvent celui du protecteur dans les missions à haut risque.</p>
+            <p><strong>Missions clés :</strong> Ifiltration en profondeur, missions affectives à fort lien humain.</p>
+        </div>
+
+        <div class="character">
+            <h3>Gabrielle O'Brien</h3>
+            <p>Charismatique, combative et parfois impulsive, Gabrielle entretient une relation importante avec Michael. Elle traverse des phases émotionnelles compliquées, mais reste une agente déterminée et efficace.</p>
+            <p><strong>Missions clés :</strong> Missions diplomatiques et enquêtes sensibles.</p>
+        </div>
+		     <div class="character">
+     <h3>Michael Hendry</h3>
+		<p> Agent réfléchi, sérieux et stratégique. Il se distingue par son sens de l’observation et sa rigueur. Son couple avec Gabrielle influence son parcours, mais il garde toujours le sens du devoir.</p> 
+			<p><strong> Missions clé : </strong> Missions longues, infiltration sociale, surveillance stratégique. </p>
+	  </div>
+		  <div class="character">
+ <h3>Bruce</h3>
+		<p> Solitaire et très sportif, Bruce est passionné d’arts martiaux. Peu bavard mais extrêmement loyal, il préfère l’action directe à la stratégie. C’est un agent de terrain redouté pour son efficacité physique.</p> 
+			<p><strong> Missions clé : </strong>  Missions violentes, protection rapprochée, arrestations musclées. </p>
+	   </div>
+		  <div class="character">
+			  <h3> Dana Smith</h3>
+		<p> Énergique, intuitive et parfois imprévisible, Dana joue un rôle important dans la vie de James. Elle ne recule devant rien et fonce tête baissée dans les situations dangereuses..</p> 
+			<p><strong> Missions clé : </strong>   Infiltration de groupes extrémistes, actions rapides, missions sous couverture. </p>
+		  </div>
+			  <div class="character">
+			  <h3> Zara Asker </h3>
+		<p> Directrice de CHERUB, elle dirige l’organisation avec fermeté.</p> 
+			<p><strong> Missions clé : </strong>   Directrice de Cherub</p>
+		  </div>
+					  <div class="character">
+			  <h3> Amy Collins </h3>
+		<p> Ancienne agente brillante, devenue superviseuse</p> 
+			<p><strong>  </strong>   </p>
+		  </div>
+				  <div class="character">
+			  <h3> Jake Parker </h3>
+		<p> Jeune recrue impulsive, douée sur le terrain.</p> 
+			<p><strong> Missions clé : </strong>  Speed et surexitée</p>
+		  </div>
+		<!-- Missions -->
 
 
-    // Affichage par défaut
+    </section>
 
-    window.onload = () => {
+</main>
 
-      showSection('accueil');
-
-    };
-
-  </script>
-
-
-
+<script>
+function toggleSummary(id) {
+    const summary = document.getElementById(id);
+    if (summary.style.display === "block") {
+        summary.style.display = "none";
+    } else {
+        summary.style.display = "block";
+    }
+}
+</script>
 </body>
-
 </html>
